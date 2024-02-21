@@ -3,7 +3,7 @@ import * as path from 'path'
 import { listStrictNullCheckEligibleFiles, getCheckedFiles } from './getStrictNullCheckEligibleFiles'
 import { ErrorCounter } from './errorCounter'
 
-const tsconfigPath = process.argv[2]
+const tsconfigPath = path.resolve(process.argv[2])
 const srcRoot = path.dirname(tsconfigPath)
 
 tryAutoAddStrictNulls()
