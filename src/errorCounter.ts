@@ -1,3 +1,4 @@
+import * as path from 'path'
 import * as fs from 'fs'
 import { spawn, ChildProcessWithoutNullStreams, execSync } from 'child_process'
 
@@ -19,7 +20,11 @@ export class ErrorCounter {
 
     // Opens TypeScript in watch mode so that it can (hopefully) incrementally
     // compile as we add and remove files from the whitelist.
-    this.tscProcess = spawn('node_modules/typescript/bin/tsc', ['-p', this.tsconfigCopyPath, '--watch', '--noEmit'])
+    
+    // Use correct TSC instance
+    const tscPath = path.join(path.dirname(this.tsconfigPath), 'node_modules/typescript/bin/tsc');
+
+    this.tscProcess = spawn(tscPath, ['-p', this.tsconfigCopyPath, '--watch', '--noEmit'])
   }
 
   public end(): void {
