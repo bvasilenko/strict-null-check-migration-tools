@@ -5,8 +5,9 @@ import { ImportTracker } from './tsHelper'
 import { findCycles } from './findCycles'
 
 function considerFile(file: string): boolean {
-  return (file.endsWith('.ts') || file.endsWith('.tsx')) &&
-         !file.endsWith('.stories.tsx')
+  return file.endsWith('.ts')
+         // Filter out all dependencies from "node_modules"
+         && !file.includes('node_modules')
 }
 
 function hasUncheckedImport(file: string, importsTracker: ImportTracker, checkedFiles: Set<string>): boolean {
