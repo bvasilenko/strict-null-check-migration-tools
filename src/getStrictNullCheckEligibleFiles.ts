@@ -120,7 +120,7 @@ export async function getCheckedFiles(tsconfigPath: string, srcRoot: string): Pr
             set.add(file)
           }
         }
-        resolve()
+        resolve(null)
       })
     });
   }));
@@ -135,7 +135,7 @@ export async function getCheckedFiles(tsconfigPath: string, srcRoot: string): Pr
         for (const file of files) {
           set.delete(file)
         }
-        resolve()
+        resolve(null)
       })
     });
   }));
