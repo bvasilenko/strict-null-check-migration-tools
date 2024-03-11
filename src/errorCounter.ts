@@ -1,3 +1,4 @@
+import * as path from 'path'
 import * as fs from 'fs'
 import { spawn, ChildProcessWithoutNullStreams, execSync } from 'child_process'
 
@@ -19,7 +20,11 @@ export class ErrorCounter {
 
     // Opens TypeScript in watch mode so that it can (hopefully) incrementally
     // compile as we add and remove files from the whitelist.
-    this.tscProcess = spawn('node_modules/typescript/bin/tsc', ['-p', this.tsconfigCopyPath, '--watch', '--noEmit'])
+    
+    // Use correct TSC instance
+    const tscPath = path.join(path.dirname(this.tsconfigPath), 'node_modules/typescript/bin/tsc');
+
+    this.tscProcess = spawn(tscPath, ['-p', this.tsconfigCopyPath, '--watch', '--noEmit'])
   }
 
   public end(): void {
@@ -43,12 +48,16 @@ export class ErrorCounter {
       this.tscProcess.stdout.on('data', listener)
 
       // Create a new config with the file removed from excludes
+      const newConfig = { ...this.originalConfig, files: [], exclude: [] };
       const exclude = new Set(this.originalConfig.exclude)
-      exclude.delete('./' + relativeFilePath)
-      fs.writeFileSync(this.tsconfigCopyPath, JSON.stringify({
-        ...this.originalConfig,
-        exclude: [...exclude],
-      }, null, 2))
+      if (!exclude.delete('./' + relativeFilePath)) {
+        const files = new Set(this.originalConfig.files)
+        files.add('./' + relativeFilePath)
+        newConfig.files = [...files];
+      } else {
+        newConfig.exclude = [...exclude];
+      }
+      fs.writeFileSync(this.tsconfigCopyPath, JSON.stringify(newConfig, null, 2))
     })
   }
 }

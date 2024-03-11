@@ -2,9 +2,9 @@ import * as path from 'path'
 import { listStrictNullCheckEligibleFiles, forEachFileInSrc, getCheckedFiles, listStrictNullCheckEligibleCycles } from './getStrictNullCheckEligibleFiles'
 import { getImportsForFile } from './tsHelper'
 
-const tsconfigPath = process.argv[2]
+const tsconfigPath = path.resolve(process.argv[2])
 console.log(tsconfigPath)
-const srcRoot = path.dirname(tsconfigPath)
+const srcRoot = path.resolve(path.dirname(tsconfigPath))
 
 let printDependedOnCount = true
 
@@ -14,7 +14,6 @@ async function findCandidates() {
   const checkedFiles = await getCheckedFiles(tsconfigPath, srcRoot)
   const eligibleFiles = await listStrictNullCheckEligibleFiles(srcRoot, checkedFiles)
   const eligibleCycles = await listStrictNullCheckEligibleCycles(srcRoot, checkedFiles)
-
   if (eligibleCycles.length > 0) {
     console.log("The following cycles are eligible for enabling strictNullChecks!")
     for (const filesInCycle of eligibleCycles) {

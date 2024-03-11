@@ -5,8 +5,8 @@ import { ImportTracker } from './tsHelper'
 import { findCycles } from './findCycles'
 import { ErrorCounter } from './errorCounter'
 
-const tsconfigPath = process.argv[2]
-const srcRoot = path.dirname(tsconfigPath)
+const tsconfigPath = path.resolve(process.argv[2])
+const srcRoot = path.resolve(path.dirname(tsconfigPath))
 const countErrors = process.argv.indexOf('--countErrors') >= 0
 
 summary()
